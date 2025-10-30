@@ -1,0 +1,26 @@
+{
+"orgName": "SO Agentforce",
+"edition": "Developer",
+"features": [
+  "EnableSetPasswordInApi",
+  "Einstein1AIPlatform"
+],
+"settings": {
+  "lightningExperienceSettings": {
+    "enableS1DesktopEnabled": true
+  },
+  "mobileSettings": {
+    "enableS1EncryptedStoragePref2": false
+  },
+  "einsteinGptSettings": {
+    "enableEinsteinGptPlatform": true,
+    "enableEinsteinGPTDeployPromptTemplatesAsActive": true
+  },
+  "agentPlatformSettings": {
+    "enableAgentPlatform": true
+  },
+  "CustomAddressFieldSettings": {
+    "enableCustomAddressField": true
+  }
+}
+}
