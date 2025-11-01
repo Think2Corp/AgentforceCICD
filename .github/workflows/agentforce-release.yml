@@ -1,0 +1,49 @@
+# This workflow is an example used during the Paris Dev Group meetup on November 5th 2025.
+# Une CI/CD pour vos Agentforce : état des lieux
+# By @nabondance
+
+name: Agentforce Release
+# This workflow deploys Agentforce to selected org.
+# It is split into several steps for better readability and understanding.
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches: [ main ]
+
+jobs:
+  setup-deploy:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    container: salesforce/cli:latest-slim
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: Install Dependencies
+        id: pnpm-install
+        run: pnpm install
+
+      - name: 'Authenticate to destination org'
+        run: |
+         echo "${{ secrets.ORG_SFDX_AUTH_URL }}" > ./authfile
+         sf org login sfdx-url --sfdxurlfile=authfile --alias=org
+
+      - name: 'Deploy Agentforce to org'
+        run: |
+          sf project deploy start --target-org=org --manifest=manifestAgent.xml --wait=30

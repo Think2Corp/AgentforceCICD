@@ -1,0 +1,12 @@
+{
+    "tag": "ci-pool",
+    "maxAllocation": 1,
+    "expiry": 10,
+    "batchSize": 10,
+    "configFilePath": "config/project-scratch-def.json",
+    "relaxAllIPRanges": true,
+    "installAll": true,
+    "enableSourceTracking": true,
+    "retryOnFailure": true,
+    "succeedOnDeploymentErrors": true
+}

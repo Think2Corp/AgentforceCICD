@@ -1,0 +1,6 @@
+{
+	"dependencies": {
+		"@flxbl-io/sfp": "^39.8.0",
+		"@salesforce/cli": "^2.110.22"
+	}
+}

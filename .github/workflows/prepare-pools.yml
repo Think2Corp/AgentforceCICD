@@ -1,0 +1,73 @@
+# This workflow is an example of pool preparation based on @flxbl-io library.
+# By @nabondance
+#-----------------------------------------------------------------------------------------------------
+# To know more about flxbl, visit https://docs.flxbl.io
+
+name: 'Prepare Pools - Auto Triggered'
+
+on:
+    workflow_dispatch:
+        inputs:
+            gitRef:
+                description: 'Commit Id from where the pools should be created'
+                required: false
+                default: 'main'
+    # Uncomment the following lines to enable scheduled runs
+    # schedule:
+    #     - cron: '0 9-20/3 * * MON-FRI'
+
+# Set the environment variables for DevHub authentication
+# DEVHUB_SFDX_AUTH_URL
+
+jobs:
+    replenish-pools:
+        runs-on: ubuntu-latest
+        container: ghcr.io/flxbl-io/sfp:latest
+        timeout-minutes: 20
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - pooltag: 'pool-ci'
+                      poolfile: 'config/pools/ci-pool.json'
+                    - pooltag: 'pool-dev'
+                      poolfile: 'config/pools/dev-pool.json'
+        steps:
+            - name: 'Checkout code'
+              uses: actions/checkout@v4
+              with:
+                  ref: ${{ github.event.inputs.gitRef }}
+                  fetch-depth: 0
+                  submodules: 'recursive'
+
+            - name: 'Install pnpm'
+              uses: pnpm/action-setup@v4
+              with:
+                version: 10
+
+            - name: 'Setup Node.js'
+              id: setup-node
+              uses: actions/setup-node@v4
+              with:
+                node-version-file: .node-version
+                cache: pnpm
+                cache-dependency-path: 'pnpm-lock.yaml'
+
+            - name: 'Install Dependencies'
+              id: pnpm-install
+              run: pnpm install
+
+            - name: 'Authenticate Dev Hub'
+              run: |
+                  echo "${{ secrets.DEVHUB_SFDX_AUTH_URL }}" > ./authfile
+                  sf org login sfdx-url  --sfdxurlfile=authfile --alias=devhub
+
+            - name: 'Prepare a pool of scratch orgs'
+              run: 'sfp prepare --poolconfig=${{ matrix.poolfile }} --targetdevhubusername=devhub'
+
+            # Publish artifacts
+            - uses: actions/upload-artifact@v4
+              if: ${{ always() }}
+              with:
+                  name: scratchorg-logs-pool-${{ matrix.pooltag }}
+                  path: .sfpowerscripts/prepare_logs
