@@ -2,22 +2,6 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>*</members>
-        <name>GenAiFunction</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>GenAiPlanner</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>GenAiPlannerBundle</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>GenAiPlugin</name>
-    </types>
-    <types>
-        <members>*</members>
         <name>GenAiPromptTemplate</name>
     </types>
     <types>
@@ -26,31 +10,23 @@
     </types>
     <types>
         <members>*</members>
+        <name>GenAiPlannerBundle</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>GenAiFunction</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>GenAiPlugin</name>
+    </types>
+    <types>
+        <members>*</members>
         <name>Bot</name>
     </types>
     <types>
         <members>*</members>
         <name>BotBlock</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>BotTemplate</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>BotVersion</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>BotTemplate</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>BotTemplate</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>BotTemplate</name>
     </types>
     <types>
         <members>*</members>

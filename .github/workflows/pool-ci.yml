@@ -1,0 +1,45 @@
+# This workflow is an example of pool preparation based on @flxbl-io library.
+# By @nabondance
+
+name: Prepare Pool CI
+
+on:
+  workflow_dispatch:
+# Uncomment the following lines to enable scheduled runs
+#   schedule:
+#     - cron: '0 6 * * *'
+
+jobs:
+  salesforce-agent:
+    runs-on: ubuntu-latest
+    container: salesforce/cli:latest-slim
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: Install Dependencies
+        id: pnpm-install
+        run: pnpm install
+
+      - name: 'Authenticate to Dev Hub'
+        run: |
+         echo "${{ secrets.DEVHUB_SFDX_AUTH_URL }}" > ./authfile
+         sf org login sfdx-url --sfdxurlfile=authfile --alias=devhub
+
+      - name: 'Prepare Pool Org'
+        run: |
+         pnpm sfp pool prepare --targetdevhubusername=devhub --poolconfig=./pools/ci-pool.json

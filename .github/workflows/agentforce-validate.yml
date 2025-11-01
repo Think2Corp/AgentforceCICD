@@ -1,0 +1,195 @@
+# This workflow is an example used during the Paris Dev Group meetup on November 5th 2025.
+# Une CI/CD pour vos Agentforce : état des lieux
+# By @nabondance
+
+name: Agentforce Validate
+# This workflow runs Salesforce Agent tests and aggregates the results.
+# It is split into several steps for better readability and understanding.
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+    branches: [ main ]
+
+jobs:
+  setup-deploy:
+    runs-on: ubuntu-latest
+    container: salesforce/cli:latest-slim
+    outputs:
+      org-auth-url: ${{ steps.capture-org.outputs.auth-url }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: 'pnpm-lock.yaml'
+
+      - name: Install Dependencies
+        id: pnpm-install
+        run: pnpm install
+
+      - name: 'Authenticate to Dev Hub'
+        run: |
+         echo "${{ secrets.DEVHUB_SFDX_AUTH_URL }}" > ./authfile
+         sf org login sfdx-url --sfdxurlfile=authfile --alias=devhub
+
+      - name: 'Get org from pool'
+        run: |
+          pnpm sfp pool fetch --targetdevhubusername=devhub --tag=ci-pool --alias=so-ci
+
+      - name: 'Deploy Agentforce to org'
+        run: |
+          sf project deploy start --target-org=so-ci --manifest=manifestAgent.xml --wait=30
+
+      - name: 'Capture org auth URL'
+        id: capture-org
+        run: |
+          AUTH_URL=$(sf org display --target-org=so-ci --json | jq -r '.result.sfdxAuthUrl')
+          echo "auth-url=$AUTH_URL" >> "$GITHUB_OUTPUT"
+
+  list-tests:
+    name: List Agent Tests
+    needs: setup-deploy
+    runs-on: ubuntu-latest
+    container: salesforce/cli:latest-slim
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Authenticate to org
+        run: |
+          echo "${{ needs.setup-deploy.outputs.org-auth-url }}" > ./org-auth.txt
+          sf org login sfdx-url --sfdxurlfile=org-auth.txt --alias=so-ci
+
+      - name: List agent tests and set matrix
+        id: set-matrix
+        run: |
+          TESTS=$(sf agent test list --target-org=so-ci --json | jq -c '[.result[].fullName]')
+          if [ "$TESTS" == "[]" ]; then
+            echo "No tests found. Failing early."
+            exit 1
+          fi
+          echo "matrix={\"test\":$TESTS}" >> "$GITHUB_OUTPUT"
+
+  run-agent-test:
+    name: Run Agent Test - ${{ matrix.test }}
+    needs: [setup-deploy, list-tests]
+    runs-on: ubuntu-latest
+    container: salesforce/cli:latest-slim
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.list-tests.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Authenticate to org
+        run: |
+          echo "${{ needs.setup-deploy.outputs.org-auth-url }}" > ./org-auth.txt
+          sf org login sfdx-url --sfdxurlfile=org-auth.txt --alias=so-ci
+
+      - name: Run test and get result
+        id: test
+        run: |
+          mkdir -p test-results
+          RUN_ID=$(sf agent test run --target-org=so-ci --api-name="${{ matrix.test }}" --wait 10 --json | jq -r '.result.runId')
+          RESULT=$(sf agent test results --target-org=so-ci --job-id="$RUN_ID" --json)
+          echo "$RESULT" > "test-results/${{ matrix.test }}.json"
+
+      - name: Upload individual result
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-test-results-${{ matrix.test }}
+          path: test-results/
+
+  validate-results:
+    name: Validate Results
+    needs: run-agent-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          path: all-results
+
+      - name: Summarize test outcomes
+        id: summary
+        run: |
+          total=0
+          passed=0
+          failed=0
+
+          for file in all-results/**/*.json; do
+            p=$(jq '[.result.testCases[] | .testResults[] | select(.result == "PASS")] | length' "$file")
+            f=$(jq '[.result.testCases[] | .testResults[] | select(.result == "FAILURE")] | length' "$file")
+            total=$((total + p + f))
+            passed=$((passed + p))
+            failed=$((failed + f))
+          done
+
+          percentage=$((passed * 100 / total))
+          echo "TOTAL=$total" >> "$GITHUB_OUTPUT"
+          echo "PASSED=$passed" >> "$GITHUB_OUTPUT"
+          echo "FAILED=$failed" >> "$GITHUB_OUTPUT"
+          echo "PERCENT=$percentage" >> "$GITHUB_OUTPUT"
+
+      - name: Display summary
+        run: |
+          echo "=================================="
+          echo "          Agent Test Summary      "
+          echo "=================================="
+          echo "Total Tests :   ${{ steps.summary.outputs.TOTAL }}"
+          echo "Tests Passed:   ${{ steps.summary.outputs.PASSED }}"
+          echo "Tests Failed:   ${{ steps.summary.outputs.FAILED }}"
+          echo "Pass        :   ${{ steps.summary.outputs.PERCENT }}%"
+          echo "=================================="
+
+      - name: Enforce pass threshold
+        if: ${{ steps.summary.outputs.PERCENT < 75 }}
+        run: |
+          echo "❌ Agent tests failed threshold (75%). Only ${{ steps.summary.outputs.PERCENT }}% passed."
+          exit 1
+
+  cleanup:
+    name: Return Org to Pool
+    needs: [setup-deploy, validate-results]
+    if: always()
+    runs-on: ubuntu-latest
+    container: salesforce/cli:latest-slim
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Authenticate to DevHub
+        run: |
+          echo "${{ secrets.DEVHUB_SFDX_AUTH_URL }}" > ./authfile
+          sf org login sfdx-url --sfdxurlfile=authfile --alias=devhub
+
+      - name: Return org to pool
+        run: |
+          echo "${{ needs.setup-deploy.outputs.org-auth-url }}" > ./org-auth.txt
+          sf org login sfdx-url --sfdxurlfile=org-auth.txt --alias=so-ci
+        #   pnpm sfp pool delete --targetdevhubusername=devhub --tag=ci-pool --myorg=so-ci
