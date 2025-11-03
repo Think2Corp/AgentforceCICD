@@ -15,8 +15,6 @@ jobs:
   setup-deploy:
     runs-on: ubuntu-latest
     container: salesforce/cli:latest-slim
-    outputs:
-      org-auth-url: ${{ steps.capture-org.outputs.auth-url }}
 
     steps:
       - name: Checkout Code
@@ -55,8 +53,19 @@ jobs:
       - name: 'Capture org auth URL'
         id: capture-org
         run: |
-          AUTH_URL=$(sf org display --target-org=so-ci --json | jq -r '.result.sfdxAuthUrl')
-          echo "auth-url=$AUTH_URL" >> "$GITHUB_OUTPUT"
+          echo "=== DEBUG: Extracting sfdxAuthUrl ==="
+          AUTH_URL=$(sf org display --target-org=so-ci --verbose --json | tr -d '\000-\037' | jq -r '.result.sfdxAuthUrl')
+
+          # Save auth URL to artifact
+          mkdir -p auth-artifact
+          echo "$AUTH_URL" > auth-artifact/auth-url.txt
+          echo "=== DEBUG: Auth URL saved to artifact ==="
+
+      - name: Upload auth URL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: org-auth-url
+          path: auth-artifact/
 
   list-tests:
     name: List Agent Tests
@@ -69,10 +78,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Download auth URL artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: org-auth-url
+          path: auth-artifact
+
       - name: Authenticate to org
         run: |
-          echo "${{ needs.setup-deploy.outputs.org-auth-url }}" > ./org-auth.txt
-          sf org login sfdx-url --sfdxurlfile=org-auth.txt --alias=so-ci
+          echo "=== DEBUG: Reading auth URL from artifact ==="
+          AUTH_URL=$(cat auth-artifact/auth-url.txt)
+          echo "AUTH_URL from artifact: '$AUTH_URL'"
+
+          if [ -z "$AUTH_URL" ] || [ "$AUTH_URL" = "null" ]; then
+            echo "ERROR: Auth URL is empty or null from artifact"
+            exit 1
+          fi
+
+          echo "$AUTH_URL" > ./authfileci
+          sf org login sfdx-url --sfdxurlfile=authfileci --alias=so-ci
 
       - name: List agent tests and set matrix
         id: set-matrix
@@ -96,10 +120,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Download auth URL artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: org-auth-url
+          path: auth-artifact
+
       - name: Authenticate to org
         run: |
-          echo "${{ needs.setup-deploy.outputs.org-auth-url }}" > ./org-auth.txt
-          sf org login sfdx-url --sfdxurlfile=org-auth.txt --alias=so-ci
+          AUTH_URL=$(cat auth-artifact/auth-url.txt)
+          echo "$AUTH_URL" > ./authfileci
+          sf org login sfdx-url --sfdxurlfile=authfileci --alias=so-ci
 
       - name: Run test and get result
         id: test
@@ -107,7 +138,8 @@ jobs:
           mkdir -p test-results
           RUN_ID=$(sf agent test run --target-org=so-ci --api-name="${{ matrix.test }}" --wait 10 --json | jq -r '.result.runId')
           RESULT=$(sf agent test results --target-org=so-ci --job-id="$RUN_ID" --json)
-          echo "$RESULT" > "test-results/${{ matrix.test }}.json"
+          # Clean control characters before saving JSON
+          echo "$RESULT" | tr -d '\000-\037' > "test-results/${{ matrix.test }}.json"
 
       - name: Upload individual result
         uses: actions/upload-artifact@v4
@@ -125,6 +157,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: all-results
+          pattern: agent-test-results-*
+          merge-multiple: true
 
       - name: Summarize test outcomes
         id: summary
@@ -133,13 +167,37 @@ jobs:
           passed=0
           failed=0
 
-          for file in all-results/**/*.json; do
-            p=$(jq '[.result.testCases[] | .testResults[] | select(.result == "PASS")] | length' "$file")
-            f=$(jq '[.result.testCases[] | .testResults[] | select(.result == "FAILURE")] | length' "$file")
+          ls -al all-results/
+
+          # Check if any JSON files exist
+          if ! ls all-results/ 1> /dev/null 2>&1; then
+            echo "No test result files found"
+            exit 1
+          fi
+
+          for file in all-results/*; do
+            echo "Processing file: $file"
+
+            # Check if file is valid JSON and has expected structure
+            if ! jq -e '.result.testCases' "$file" > /dev/null 2>&1; then
+              echo "Skipping invalid or malformed JSON file: $file"
+              continue
+            fi
+
+            p=$(jq '[.result.testCases[]? | .testResults[]? | select(.result == "PASS")] | length' "$file" 2>/dev/null || echo "0")
+            f=$(jq '[.result.testCases[]? | .testResults[]? | select(.result == "FAILURE")] | length' "$file" 2>/dev/null || echo "0")
+
             total=$((total + p + f))
             passed=$((passed + p))
             failed=$((failed + f))
+
+            echo "File $file: $p passed, $f failed"
           done
+
+          if [ $total -eq 0 ]; then
+            echo "No test results found in any files"
+            exit 1
+          fi
 
           percentage=$((passed * 100 / total))
           echo "TOTAL=$total" >> "$GITHUB_OUTPUT"
@@ -183,6 +241,12 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: Download auth URL artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: org-auth-url
+          path: auth-artifact
+
       - name: Authenticate to DevHub
         run: |
           echo "${{ secrets.DEVHUB_SFDX_AUTH_URL }}" > ./authfile
@@ -190,6 +254,7 @@ jobs:
 
       - name: Return org to pool
         run: |
-          echo "${{ needs.setup-deploy.outputs.org-auth-url }}" > ./org-auth.txt
+          AUTH_URL=$(cat auth-artifact/auth-url.txt)
+          echo "$AUTH_URL" > ./org-auth.txt
           sf org login sfdx-url --sfdxurlfile=org-auth.txt --alias=so-ci
-        #   pnpm sfp pool delete --targetdevhubusername=devhub --tag=ci-pool --myorg=so-ci
+          pnpm sfp pool delete --targetdevhubusername=devhub --tag=ci-pool --myorg=so-ci
