@@ -1,0 +1,16 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "activityDetails" : {
+      "title" : "{!$Label.InvocableActionGetActivityDetails.outputActivityDetailsLabel}",
+      "description" : "{!$Label.InvocableActionGetActivityDetails.outputActivityDetailsDescription}",
+      "lightning:type" : "lightning__textType",
+      "einstein:description" : "The data for the activity record in Salesforce, including its content and other relevant details.",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType",
+  "lightning:textIndexed" : true
+}

@@ -1,0 +1,14 @@
+{
+  "required" : [ "Input:Theme" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "Input:Theme" : {
+      "title" : "Theme",
+      "description" : "Theme of the joke",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

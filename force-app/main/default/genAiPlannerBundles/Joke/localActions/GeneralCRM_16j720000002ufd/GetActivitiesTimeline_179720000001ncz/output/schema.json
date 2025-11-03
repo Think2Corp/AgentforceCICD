@@ -1,0 +1,16 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "activitiesList" : {
+      "title" : "{!$Label.InvocableActionGetActivitiesTimeline.outputActivitiesListLabel}",
+      "description" : "{!$Label.InvocableActionGetActivitiesTimeline.outputActivitiesListDescription}",
+      "lightning:type" : "lightning__textType",
+      "einstein:description" : "List of activities related to the record Id, with high level information.",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType",
+  "lightning:textIndexed" : true
+}

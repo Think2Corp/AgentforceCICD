@@ -32,5 +32,9 @@
         <members>*</members>
         <name>BotTemplate</name>
     </types>
+    <types>
+        <members>*</members>
+        <name>AiEvaluationDefinition</name>
+    </types>
     <version>65.0</version>
 </Package>

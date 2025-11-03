@@ -1,0 +1,17 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "generatedEmail" : {
+      "title" : "{!$Label.InvocableActionDraftOrRevise.InvocableActionGeneratedEmailOutputLabel}",
+      "description" : "{!$Label.InvocableActionDraftOrRevise.InvocableActionGeneratedEmailOutputDesc}",
+      "lightning:type" : "lightning__emailType",
+      "einstein:description" : "A JSON object that contains the recipient ID, subject line, and body of the email.",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType",
+  "lightning:textIndexed" : true
+}
