@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>jokeTest</name>
+    <subjectName>Joke_Teller</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v2</subjectVersion>
+    <testCase>
+        <expectation>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Tell_Joke_16jHE00000005e1</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me a joke</utterance>
+        </inputs>
+        <number>1</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Tell_Joke_16jHE00000005e1</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Can you make me laugh</utterance>
+        </inputs>
+        <number>2</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[&apos;Joke_179ac9e3c2c30fc&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A programming-related joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Tell_Joke_16jHE00000005e1</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>I need a joke about programming</utterance>
+        </inputs>
+        <number>3</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[&apos;Joke_179ac9e3c2c30fc&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A dad joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Tell_Joke_16jHE00000005e1</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me a dad joke</utterance>
+        </inputs>
+        <number>4</number>
+    </testCase>
+</AiEvaluationDefinition>

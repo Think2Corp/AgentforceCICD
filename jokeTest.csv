@@ -1,5 +1,5 @@
 Utterance,Expected Topic,Expected Actions,Expected Response
-Tell me a joke,Joke_Telling_16j720000002ufd,,A joke is delivered
-Can you make me laugh,Joke_Telling_16j720000002ufd,,A joke is delivered
-I need a joke about programming,Joke_Telling_16j720000002ufd,"['ThemedJoke']",A programming-related joke is delivered
-Tell me a dad joke,Joke_Telling_16j720000002ufd,"['ThemedJoke']",A dad joke is delivered
+Tell me a joke,Tell_Joke_16jHE00000005e1,,A joke is delivered
+Can you make me laugh,Tell_Joke_16jHE00000005e1,,A joke is delivered
+I need a joke about programming,Tell_Joke_16jHE00000005e1,"['Joke_179ac9e3c2c30fc']",A programming-related joke is delivered
+Tell me a dad joke,Tell_Joke_16jHE00000005e1,"['Joke_179ac9e3c2c30fc']",A dad joke is delivered
