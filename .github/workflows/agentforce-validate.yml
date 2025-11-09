@@ -50,6 +50,10 @@ jobs:
         run: |
           sf project deploy start --target-org=so-ci --manifest=manifestAgent.xml --wait=30
 
+      - name: 'Deploy Agentforce Tests to org'
+        run: |
+          sf project deploy start --target-org=so-ci --metadata=AiEvaluationDefinition --wait=30
+
       - name: 'Capture org auth URL'
         id: capture-org
         run: |
