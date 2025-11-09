@@ -1,4 +1,4 @@
-# Agentforce CICD
+# Agentforce CI/CD
 
 ## 🎯 Presentation Demo Repository
 
@@ -14,14 +14,14 @@ This repository was created for the **Paris Salesforce Dev Group** presentation 
 
 The PDF: [pdf](./resources/Slides.pdf)
 
-The video: [Coming soon]
+The video: [Coming soon](https://www.youtube.com/@think2ai)
 
 ## 📖 What's in this demo?
 
 This repository demonstrates a complete CI/CD pipeline for Salesforce Agentforce development, showcasing:
 
 - ✅ **Automated Agent Testing** - Parallel execution with dynamic test discovery
-- ✅ **Scratch Org Pool Management** - Efficient org provisioning using @flxbl-io/sfp
+- ✅ **Scratch Org Pool Management** - Efficient org provisioning using [@flxbl-io/sfp](https://github.com/flxbl-io/sfp)
 - ✅ **Quality Gates** - 75% test pass threshold enforcement
 - ✅ **GitHub Actions Integration** - Complete PR validation and release workflow
 - ✅ **Production Deployment** - Automated release to target org on merge
