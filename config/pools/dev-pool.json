@@ -8,5 +8,6 @@
     "installAll": true,
     "enableSourceTracking": true,
     "retryOnFailure": true,
-    "succeedOnDeploymentErrors": true
+    "succeedOnDeploymentErrors": true,
+    "postDeploymentScriptPath": "scripts/postDeployment.sh"
 }
