@@ -256,9 +256,13 @@ jobs:
           echo "${{ secrets.DEVHUB_SFDX_AUTH_URL }}" > ./authfile
           sf org login sfdx-url --sfdxurlfile=authfile --alias=devhub
 
-      - name: Return org to pool
+      - name: Authenticate to org
         run: |
           AUTH_URL=$(cat auth-artifact/auth-url.txt)
-          echo "$AUTH_URL" > ./org-auth.txt
-          sf org login sfdx-url --sfdxurlfile=org-auth.txt --alias=so-ci
-          pnpm sfp pool delete --targetdevhubusername=devhub --tag=ci-pool --myorg=so-ci
+          echo "$AUTH_URL" > ./authfileci
+          sf org login sfdx-url --sfdxurlfile=authfileci --alias=so-ci
+
+      - name: Return org to pool
+        run: |
+          ORG_ID=$(sf org display -o so-ci --json | jq -r '.result.id' | cut -c 1-15)
+          sf data update record -o devhub --sobject ScratchOrgInfo --where "ScratchOrg='$ORG_ID'" --values "Allocation_status__c='Available'"
