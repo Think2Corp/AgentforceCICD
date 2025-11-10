@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>1N9eG8XTLrkmzZp6A+tPfCXoNLUeJbZtnCRIa+Eh8zY=_1</activeVersionIdentifier>
+    <developerName>ThemedJoke</developerName>
+    <masterLabel>ThemedJoke</masterLabel>
+    <templateVersions>
+        <content>Tell a joke about the theme: {!$Input:Theme}
+</content>
+        <inputs>
+            <apiName>Theme</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Theme</masterLabel>
+            <referenceName>Input:Theme</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>1N9eG8XTLrkmzZp6A+tPfCXoNLUeJbZtnCRIa+Eh8zY=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>JokingTest</name>
+    <subjectName>Joke_Agent</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <testCase>
+        <expectation>
+            <expectedValue>Tell_a_Joke</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[&apos;ThemedJoke&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Here&apos;s a joke about technology: A joke about technology.</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>Can you tell me a joke about technology?</utterance>
+        </inputs>
+        <number>1</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>Tell_a_Joke</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[&apos;GetRecordDetails&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Here&apos;s a joke for you: General joke details.</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>Can you tell me a joke?</utterance>
+        </inputs>
+        <number>2</number>
+    </testCase>
+</AiEvaluationDefinition>
