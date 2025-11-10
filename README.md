@@ -14,7 +14,7 @@ This repository was created for the **Paris Salesforce Dev Group** presentation 
 
 The PDF: [pdf](./resources/Slides.pdf)
 
-The video: [Coming soon](https://www.youtube.com/@think2ai)
+The video: [Coming soon](https://youtu.be/d0er1JVcqvY)
 
 ## 📖 What's in this demo?
 
