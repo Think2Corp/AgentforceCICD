@@ -9,5 +9,5 @@
     "enableSourceTracking": true,
     "retryOnFailure": true,
     "succeedOnDeploymentErrors": true,
-    "postDeploymentScriptPath": "scripts/postDeployment.sh"
+    "postDeploymentScriptPath": "agentforce-classic/scripts/postDeployment.sh"
 }

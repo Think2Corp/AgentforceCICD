@@ -1,7 +1,10 @@
 {
   "packageDirectories": [
     {
-      "path": "force-app",
+      "path": "agentforce-classic/force-app"
+    },
+    {
+      "path": "agentforce-script/force-app",
       "default": true
     }
   ],

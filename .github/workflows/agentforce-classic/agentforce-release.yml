@@ -45,13 +45,13 @@ jobs:
          sf org login sfdx-url --sfdxurlfile=authfile --alias=org
 
       - name: 'Deactivate agents before deployment'
-        run: bash scripts/manage-agents.sh deactivate org
+        run: bash agentforce-classic/scripts/manage-agents.sh deactivate org
 
       - name: 'Deploy Agentforce to org'
         id: deploy
         run: |
-          sf project deploy start --target-org=org --manifest=manifestAgent.xml --wait=30
+          sf project deploy start --target-org=org --manifest=agentforce-classic/manifest.xml --wait=30
 
       - name: 'Activate agents after deployment'
         if: always()
-        run: bash scripts/manage-agents.sh activate org
+        run: bash agentforce-classic/scripts/manage-agents.sh activate org

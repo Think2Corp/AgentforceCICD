@@ -1,6 +1,6 @@
 {
 "orgName": "SO Agentforce",
-"edition": "Developer",
+"edition": "developer",
 "features": [
   "EnableSetPasswordInApi",
   "Einstein1AIPlatform"

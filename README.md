@@ -1,122 +1,133 @@
 # Agentforce CI/CD
 
-## 🎯 Presentation Demo Repository
+## Presentation Demo Repository
 
-This repository was created for the **Paris Salesforce Dev Group** presentation on **November 5th, 2025**.
-
-**Presentation Title**: `Une CI/CD pour vos Agentforce : état des lieux`
+This repository contains demo material for Salesforce Agentforce CI/CD, showcasing two approaches to Agentforce DevOps.
 
 **Presenter**: [@nabondance](https://github.com/nabondance)
 
-## 💡 Presentation Slides
+---
 
-[![Slides](./resources/SlidesCover.png)](https://docs.google.com/presentation/d/1-kYRPyL2792Mu3WCTfTFenWKxlG5TSbd2vSTt9fQYrA)
+## Demos
 
-The PDF: [pdf](./resources/Slides.pdf)
+### agentforce-classic
 
-The video: [link](https://www.youtube.com/watch?v=d0er1JVcqvY)
+**Presented at**: Paris Salesforce Dev Group — November 5th, 2025
+**Title**: `Une CI/CD pour vos Agentforce : état des lieux`
 
-## 📖 What's in this demo?
+Classic Agentforce CI/CD pipeline using the standard Salesforce declarative approach with scratch org pools, parallel agent testing, and automated release.
 
-This repository demonstrates a complete CI/CD pipeline for Salesforce Agentforce development, showcasing:
+[![Slides](./agentforce-classic/resources/SlidesCover.png)](https://docs.google.com/presentation/d/1-kYRPyL2792Mu3WCTfTFenWKxlG5TSbd2vSTt9fQYrA)
 
-- ✅ **Automated Agent Testing** - Parallel execution with dynamic test discovery
-- ✅ **Scratch Org Pool Management** - Efficient org provisioning using [@flxbl-io/sfp](https://github.com/flxbl-io/sfp)
-- ✅ **Quality Gates** - 75% test pass threshold enforcement
-- ✅ **GitHub Actions Integration** - Complete PR validation and release workflow
-- ✅ **Production Deployment** - Automated release to target org on merge
+Slides PDF: [pdf](./agentforce-classic/resources/Slides.pdf) | Video: [link](https://www.youtube.com/watch?v=d0er1JVcqvY)
 
-## 🏗️ Demo Architecture
+**What it demonstrates:**
+- Automated agent testing with parallel execution and dynamic test discovery
+- Scratch org pool management using [@flxbl-io/sfp](https://github.com/flxbl-io/sfp)
+- Quality gate: 75% test pass threshold
+- GitHub Actions PR validation and release workflows
+- Automated production deployment on merge
 
-The demo showcases three main workflows:
+**Workflows** (`.github/workflows/agentforce-classic/`):
+| Workflow | Trigger | Flow |
+|----------|---------|------|
+| `agentforce-validate.yml` | PR to main | Setup → Deploy → Test Discovery → Parallel Testing → Validation → Cleanup |
+| `agentforce-release.yml` | PR merged to main | Authenticate → Deactivate agents → Deploy → Reactivate agents |
 
-### 1. Agent Validation Pipeline (`agentforce-validate.yml`)
-**Triggered on**: Pull Requests to main
+**Metadata & config** (`agentforce-classic/`):
+- `force-app/` — Salesforce Agentforce metadata (bots, prompt templates, AI bundles)
+- `manifest.xml` — Agentforce metadata manifest
+- `config/` — Scratch org definition and pool configs (CI + dev)
+- `scripts/` — Agent lifecycle, deployment, and pool helper scripts
+
+---
+
+### agentforce-script
+
+> Work in progress
+
+Agentforce Script DevOps demo — coming soon.
+
+**Workflows** (`.github/workflows/agentforce-script/`): coming soon
+
+**Metadata & config** (`agentforce-script/`):
+- `force-app/` — Salesforce metadata
+- `config/` — Scratch org and pool configs
+- `scripts/` — Helper scripts
+
+---
+
+## Shared Infrastructure
+
+### Pool Preparation (`prepare-pools.yml`)
+
+**Triggered on**: Manual dispatch (or scheduled)
+
+Provisions scratch org pools used by the CI pipelines.
+
 ```
-Setup → Deploy → Test Discovery → Parallel Testing → Validation → Cleanup
+Authenticate → Prepare Pools (CI & Dev) → Configure Orgs
 ```
 
-### 2. Agentforce Release (`agentforce-release.yml`)
-**Triggered on**: Pull Request merged to main
+To learn more about pool strategies: `How Scratch Orgs Pools Fit Into Your Salesforce Strategy`
+- [Slides](https://speakerdeck.com/nabondance/frenchtouchdreamin-elevate-your-devops-how-scratch-orgs-pools-fit-into-your-salesforce-strategy)
+- [Video](https://www.youtube.com/watch?v=09WEqN1emIM)
+
+### Required GitHub Secrets
+
+| Secret | Used by |
+|--------|---------|
+| `DEVHUB_SFDX_AUTH_URL` | All workflows (pool fetch, cleanup) |
+| `ORG_SFDX_AUTH_URL` | Release workflow (production deploy) |
+
+---
+
+## Repository Structure
+
 ```
-Setup → Authenticate → Deploy to Production Org
+AgentforceCICD/
+├── .github/
+│   └── workflows/
+│       ├── agentforce-classic/    # Classic demo workflows
+│       ├── agentforce-script/     # Script DevOps workflows (WIP)
+│       └── prepare-pools.yml      # Shared pool preparation
+├── agentforce-classic/            # Classic demo — self-contained
+│   ├── force-app/
+│   ├── config/
+│   ├── scripts/
+│   ├── resources/
+│   └── manifest.xml
+├── agentforce-script/             # Script DevOps demo — WIP
+│   ├── force-app/
+│   ├── config/
+│   ├── scripts/
+│   └── resources/
+├── sfdx-project.json
+└── package.json
 ```
 
-### 3. Pool Preparation (`prepare-pools.yml`)
-**Name**: "Prepare Pools"
-**Triggered on**: Manual/Scheduled
-```
-Authenticate → Prepare Pools (CI&Dev) → Configure Orgs
-```
+---
 
-To know more about pool strategies, see the talk `How Scratch Orgs Pools Fit Into Your Salesforce Strategy`
-- [📄 Slides](https://speakerdeck.com/nabondance/frenchtouchdreamin-elevate-your-devops-how-scratch-orgs-pools-fit-into-your-salesforce-strategy)
-- [🎬 Video](https://www.youtube.com/watch?v=09WEqN1emIM)
+## Technologies
 
-## 🚀 How to use this demo
+- **GitHub Actions** — CI/CD orchestration
+- **Salesforce CLI** — Metadata operations and agent testing
+- **@flxbl-io/sfp** — Scratch org pool management
+- **pnpm** — Package management
+- **Docker** — Containerized job execution
 
-### Quick Start (Demo Environment)
-1. **Fork this repository**
-2. **Set up secrets** in your GitHub repo:
-   - `DEVHUB_SFDX_AUTH_URL`: Your Dev Hub auth URL
-   - `ORG_SFDX_AUTH_URL`: Your target org auth URL (for releases)
-3. **Create a PR** to see the validation pipeline in action
-4. **Merge the PR** to trigger the release workflow
-5. **Watch the workflows** execute automatically
-
-## 📋 Demo Components Explained
-
-### Agentforce Metadata (`manifestAgent.xml`)
-Includes all Agentforce-related metadata types:
-- GenAiPromptTemplate
-- GenAiFunction
-- GenAiPlugin
-- Bot & BotBlock
-- BotTemplate
-- AiEvaluationDefinition
-
-### Pool Configuration (`config/pools/*.json`)
-Optimized for CI/CD with:
-- Quick org provisioning (10-day expiry)
-- Agentforce features enabled
-- Post-deployment automation
-
-### Scratch Org Definition (`config/project-scratch-def.json`)
-Pre-configured with:
-- Agentforce features enabled
-- Developer edition optimized
-
-## 📊 Key Takeaways from the Presentation
-
-1. **Parallel Testing**: Dynamic matrix generation for optimal performance
-2. **Pool Management**: Significant time savings vs on-demand org creation
-3. **Quality Gates**: Automated enforcement of testing standards
-4. **Artifact Handling**: Secure org authentication across jobs
-5. **Error Handling**: Robust failure scenarios and cleanup
-
-## 🔧 Technologies Demonstrated
-
-- **GitHub Actions**: CI/CD orchestration
-- **Salesforce CLI**: Metadata operations and testing
-- **@flxbl-io/sfp**: Advanced DevOps capabilities
-- **pnpm**: Fast package management
-- **Docker**: Containerized execution environment
-
-## 📚 Resources
+## Resources
 
 - [Salesforce CLI Guide](https://developer.salesforce.com/tools/sfdxcli)
 - [Agentforce Guide](https://www.salesforce.com/agentforce/guide/)
 - [@flxbl-io/sfp Documentation](https://docs.flxbl.io/)
 
-## 🤝 Questions & Discussion
+## Questions & Discussion
 
-Feel free to open issues or start discussions about any aspect of this CI/CD approach!
-You can contact me directly on LinkedIn: [Nathan Abondance](https://www.linkedin.com/in/nabondance/)
+Open an issue or reach out on LinkedIn: [Nathan Abondance](https://www.linkedin.com/in/nabondance/)
 
 ---
 
-**Note**: This is a demonstration repository. Adapt the configurations to your organization's specific requirements before using in production.
+**Note**: This is a demonstration repository. Adapt configurations to your organization's requirements before using in production.
 
-**Maintenance**: I will try to keep this repo up-to-date with the latest Salesforce and Agentforce features, don't forget to star/follow it.
-
-🫶
+**Maintenance**: Kept up-to-date with the latest Salesforce and Agentforce features — star/follow to stay updated.
