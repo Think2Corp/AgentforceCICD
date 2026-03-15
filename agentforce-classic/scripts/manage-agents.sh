@@ -23,7 +23,7 @@ BOT_NAMES=()
 while IFS= read -r file; do
   bot_name=$(basename "$file" .bot-meta.xml)
   BOT_NAMES+=("$bot_name")
-done < <(find force-app -name "*.bot-meta.xml" | sort)
+done < <(find agentforce-classic/force-app -name "*.bot-meta.xml" | sort)
 
 if [[ ${#BOT_NAMES[@]} -eq 0 ]]; then
   echo "No bot-meta.xml files found. Skipping agent management."

@@ -2,3 +2,4 @@ sf org create scratch --definition-file config/project-scratch-def.json --target
 
 sf org assign permset --name EinsteinGPTPromptTemplateManager --target-org so-dev
 sf org assign permset --name AgentPlatformBuilder --target-org so-dev
+sf org assign permset --name AgentforceTesting --target-org so-dev

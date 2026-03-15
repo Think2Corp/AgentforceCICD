@@ -1,8 +1,8 @@
-# This workflow is an example used during the Paris Dev Group meetup on November 5th 2025.
-# Une CI/CD pour vos Agentforce : état des lieux
+# This workflow is an example used during the Irish Dreamin'
+# Agentforce DevOps: state of the art
 # By @nabondance
 
-name: Agentforce Validate
+name: Agentforce Script Validate
 # This workflow runs Salesforce Agent tests and aggregates the results.
 # It is split into several steps for better readability and understanding.
 
@@ -20,8 +20,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
 
-      - name: 'Scope project to agentforce-classic'
-        run: cp agentforce-classic/sfdx-project.json sfdx-project.json
+      - name: 'Scope project to agentforce-script'
+        run: cp agentforce-script/sfdx-project.json sfdx-project.json
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -49,24 +49,29 @@ jobs:
         run: |
           pnpm sfp pool fetch --targetdevhubusername=devhub --tag=ci-pool --alias=so-ci
 
-      - name: 'Deploy Agentforce to org'
+      - name: 'Deploy Agentforce Script to org'
         run: |
-          sf project deploy start --target-org=so-ci --manifest=agentforce-classic/manifest.xml --wait=30
+          sf project deploy start --target-org=so-ci --manifest=agentforce-script/manifest.xml --wait=30
+
+      - name: 'Publish Agentforce authoring bundles'
+        run: bash agentforce-script/scripts/publishAgents.sh so-ci
+
+      - name: 'Activate Agentforce agents'
+        run: bash agentforce-script/scripts/activateAgents.sh so-ci
+
+      - name: 'Patch test definitions with latest agent version'
+        run: bash agentforce-script/scripts/patchTestVersions.sh so-ci
 
       - name: 'Deploy Agentforce Tests to org'
         run: |
-          sf project deploy start --target-org=so-ci --source-dir=agentforce-classic/force-app/main/default/aiEvaluationDefinitions --wait=30
+          sf project deploy start --target-org=so-ci --source-dir=agentforce-script/force-app/main/default/aiEvaluationDefinitions --wait=30
 
       - name: 'Capture org auth URL'
         id: capture-org
         run: |
-          echo "=== DEBUG: Extracting sfdxAuthUrl ==="
           AUTH_URL=$(sf org display --target-org=so-ci --verbose --json | tr -d '\000-\037' | jq -r '.result.sfdxAuthUrl')
-
-          # Save auth URL to artifact
           mkdir -p auth-artifact
           echo "$AUTH_URL" > auth-artifact/auth-url.txt
-          echo "=== DEBUG: Auth URL saved to artifact ==="
 
       - name: Upload auth URL artifact
         uses: actions/upload-artifact@v4
@@ -93,15 +98,11 @@ jobs:
 
       - name: Authenticate to org
         run: |
-          echo "=== DEBUG: Reading auth URL from artifact ==="
           AUTH_URL=$(cat auth-artifact/auth-url.txt)
-          echo "AUTH_URL from artifact: '$AUTH_URL'"
-
           if [ -z "$AUTH_URL" ] || [ "$AUTH_URL" = "null" ]; then
             echo "ERROR: Auth URL is empty or null from artifact"
             exit 1
           fi
-
           echo "$AUTH_URL" > ./authfileci
           sf org login sfdx-url --sfdxurlfile=authfileci --alias=so-ci
 
@@ -145,7 +146,6 @@ jobs:
           mkdir -p test-results
           RUN_ID=$(sf agent test run --target-org=so-ci --api-name="${{ matrix.test }}" --wait 10 --json | jq -r '.result.runId')
           RESULT=$(sf agent test results --target-org=so-ci --job-id="$RUN_ID" --json)
-          # Clean control characters before saving JSON
           echo "$RESULT" | tr -d '\000-\037' > "test-results/${{ matrix.test }}.json"
 
       - name: Upload individual result
@@ -176,7 +176,6 @@ jobs:
 
           ls -al all-results/
 
-          # Check if any JSON files exist
           if ! ls all-results/ 1> /dev/null 2>&1; then
             echo "No test result files found"
             exit 1
@@ -185,7 +184,6 @@ jobs:
           for file in all-results/*; do
             echo "Processing file: $file"
 
-            # Check if file is valid JSON and has expected structure
             if ! jq -e '.result.testCases' "$file" > /dev/null 2>&1; then
               echo "Skipping invalid or malformed JSON file: $file"
               continue
@@ -226,7 +224,7 @@ jobs:
       - name: Enforce pass threshold
         if: ${{ steps.summary.outputs.PERCENT < 75 }}
         run: |
-          echo "❌ Agent tests failed threshold (75%). Only ${{ steps.summary.outputs.PERCENT }}% passed."
+          echo "Agent tests failed threshold (75%). Only ${{ steps.summary.outputs.PERCENT }}% passed."
           exit 1
 
   cleanup:

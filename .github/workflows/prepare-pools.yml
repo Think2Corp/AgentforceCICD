@@ -28,9 +28,9 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - pooltag: 'pool-ci'
+                    - pooltag: 'ci-pool'
                       poolfile: 'config/pools/ci-pool.json'
-                    - pooltag: 'pool-dev'
+                    - pooltag: 'dev-pool'
                       poolfile: 'config/pools/dev-pool.json'
         steps:
             - name: 'Checkout code'

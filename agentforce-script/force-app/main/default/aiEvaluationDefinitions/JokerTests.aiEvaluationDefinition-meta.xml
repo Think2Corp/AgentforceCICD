@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>JokerTests</name>
+    <subjectName>Joker</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v2</subjectVersion>
+    <testCase>
+        <expectation>
+            <expectedValue>[&apos;Themed_joke&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A family-friendly joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>tell_jokes</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me a joke</utterance>
+        </inputs>
+        <number>1</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[&apos;Themed_joke&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A pun is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>tell_jokes</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me a pun</utterance>
+        </inputs>
+        <number>2</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[&apos;Themed_joke&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A knock-knock joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>tell_jokes</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me a knock-knock joke</utterance>
+        </inputs>
+        <number>3</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[&apos;Themed_joke&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A dad joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>tell_jokes</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me a dad joke</utterance>
+        </inputs>
+        <number>4</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[&apos;Themed_joke&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A random family-friendly joke is delivered</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>tell_jokes</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Give me a random joke</utterance>
+        </inputs>
+        <number>5</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Agent declines and offers joke categories instead</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>off_topic</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>What is the capital of France</utterance>
+        </inputs>
+        <number>6</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>[]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Agent declines and offers joke categories instead</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <expectation>
+            <expectedValue>off_topic</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <inputs>
+            <utterance>Help me write an email</utterance>
+        </inputs>
+        <number>7</number>
+    </testCase>
+</AiEvaluationDefinition>
