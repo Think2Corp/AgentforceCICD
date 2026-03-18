@@ -1,0 +1,8 @@
+Utterance,Expected Topic,Expected Actions,Expected Response
+Tell me a joke,tell_jokes,"['Themed_joke']",A family-friendly joke is delivered
+Tell me a pun,tell_jokes,"['Themed_joke']",A pun is delivered
+Tell me a knock-knock joke,tell_jokes,"['Themed_joke']",A knock-knock joke is delivered
+Tell me a dad joke,tell_jokes,"['Themed_joke']",A dad joke is delivered
+Give me a random joke,tell_jokes,"['Themed_joke']",A random family-friendly joke is delivered
+What is the capital of France,off_topic,"[]",Agent declines and offers joke categories instead
+Help me write an email,off_topic,"[]",Agent declines and offers joke categories instead

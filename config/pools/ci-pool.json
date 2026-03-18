@@ -1,6 +1,6 @@
 {
     "tag": "ci-pool",
-    "maxAllocation": 2,
+    "maxAllocation": 1,
     "expiry": 10,
     "batchSize": 10,
     "configFilePath": "config/project-scratch-def.json",

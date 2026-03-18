@@ -1,9 +1,9 @@
-# This workflow is an example used during the Paris Dev Group meetup on November 5th 2025.
-# Une CI/CD pour vos Agentforce : état des lieux
+# This workflow is an example used during the Irish Dreamin'
+# Agentforce DevOps: state of the art
 # By @nabondance
 
-name: Agentforce Release
-# This workflow deploys Agentforce to selected org.
+name: Agentforce Script Release
+# This workflow deploys Agentforce Script to selected org.
 # It is split into several steps for better readability and understanding.
 
 on:
@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
+
+      - name: 'Scope project to agentforce-script'
+        run: cp agentforce-script/sfdx-project.json sfdx-project.json
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -44,6 +47,12 @@ jobs:
          echo "${{ secrets.ORG_SFDX_AUTH_URL }}" > ./authfile
          sf org login sfdx-url --sfdxurlfile=authfile --alias=org
 
-      - name: 'Deploy Agentforce to org'
+      - name: 'Deploy Agentforce Script to org'
         run: |
-          sf project deploy start --target-org=org --manifest=manifestAgent.xml --wait=30
+          sf project deploy start --target-org=org --manifest=agentforce-script/manifest.xml --wait=30
+
+      - name: 'Publish Agentforce authoring bundles'
+        run: bash agentforce-script/scripts/publishAgents.sh org
+
+      - name: 'Activate Agentforce agents'
+        run: bash agentforce-script/scripts/activateAgents.sh org

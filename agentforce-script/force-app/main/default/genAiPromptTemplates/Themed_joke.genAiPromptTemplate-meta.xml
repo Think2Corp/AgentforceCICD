@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>WqnppdRc5CHaBvcI+AcOOjIzk92qYk3hAgduzhbnl1g=_2</activeVersionIdentifier>
+    <description>Make a joke about a specific theme</description>
+    <developerName>Themed_joke</developerName>
+    <masterLabel>Themed_joke</masterLabel>
+    <templateVersions>
+        <content>You are the funniest person in the room, tell a joke about this theme: {!$Input:Theme}
+
+Do not tell anything else than the joke itself.
+</content>
+        <inputs>
+            <apiName>Theme</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Theme</masterLabel>
+            <referenceName>Input:Theme</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
+        <status>Draft</status>
+        <versionIdentifier>WqnppdRc5CHaBvcI+AcOOjIzk92qYk3hAgduzhbnl1g=_1</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are the funniest person in the room, tell a joke about this theme: {!$Input:Theme}
+
+Do not tell anything else than the joke itself.
+</content>
+        <inputs>
+            <apiName>Theme</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Theme</masterLabel>
+            <referenceName>Input:Theme</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Sonnet</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>WqnppdRc5CHaBvcI+AcOOjIzk92qYk3hAgduzhbnl1g=_2</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
