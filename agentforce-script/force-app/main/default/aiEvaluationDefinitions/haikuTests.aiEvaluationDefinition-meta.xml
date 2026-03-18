@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AiEvaluationDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>haikuTests</name>
+    <subjectName>Haiku</subjectName>
+    <subjectType>AGENT</subjectType>
+    <subjectVersion>v1</subjectVersion>
+    <testCase>
+        <expectation>
+            <expectedValue>haiku_theme</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[&apos;ThemedHaiku&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>A gentle breeze blows
+Leaves dance in the morning light
+Nature&apos;s calm embrace</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>Can you create a haiku about nature?</utterance>
+        </inputs>
+        <number>1</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>GeneralFAQ</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[&apos;AnswerQuestionsWithKnowledge&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Our return policy allows returns within 30 days with a receipt.</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>Can you tell me about your return policy?</utterance>
+        </inputs>
+        <number>2</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>ambiguous_question</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Please clarify more
+Your question is too unclear
+Help me understand</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me more about it.</utterance>
+        </inputs>
+        <number>3</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>haiku_only</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[&apos;ThemedHaiku&apos;]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Silent moonlit night
+Stars whisper secrets above
+Dreams in silver light</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>Create a haiku for me.</utterance>
+        </inputs>
+        <number>4</number>
+    </testCase>
+    <testCase>
+        <expectation>
+            <expectedValue>off_topic</expectedValue>
+            <name>topic_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>[]</expectedValue>
+            <name>action_sequence_match</name>
+        </expectation>
+        <expectation>
+            <expectedValue>Let&apos;s focus again
+On topics we can discuss
+Please ask something else</expectedValue>
+            <name>bot_response_rating</name>
+        </expectation>
+        <inputs>
+            <utterance>Tell me a joke.</utterance>
+        </inputs>
+        <number>5</number>
+    </testCase>
+</AiEvaluationDefinition>
