@@ -9,7 +9,7 @@ name: Agentforce Validate
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
-    branches: [ main ]
+    branches: [ agentforce-classic ] # Change to main for actual release workflow, agentforce-classic is used here for demo purposes
 
 jobs:
   setup-deploy:
