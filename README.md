@@ -23,7 +23,7 @@ Classic Agentforce uses the standard declarative bot metadata approach. The CI/C
 - Must deactivate agent before deploying, reactivate after
 - Test definitions (`AiEvaluationDefinition`) deployed separately
 
-**Workflows** (`.github/workflows/agentforce-classic/`):
+**Workflows** (`.github/workflows/`):
 | Workflow | Trigger | Flow |
 |----------|---------|------|
 | `agentforce-validate.yml` | PR to main | Setup → Deploy → Test Discovery → Parallel Testing → Validation → Cleanup |
@@ -58,7 +58,7 @@ Agentforce Script is the new approach introduced in Spring '25. Instead of manag
 - No deactivation needed before deploy — `sf agent publish` creates a new inactive version, then activate after
 - `subjectVersion` in test definitions must match the active BotVersion — patched dynamically in CI
 
-**Workflows** (`.github/workflows/agentforce-script/`):
+**Workflows** (`.github/workflows/`):
 | Workflow | Trigger | Flow |
 |----------|---------|------|
 | `agentforce-script-validate.yml` | PR to main | Setup → Deploy dependencies → Publish → Activate → Patch test versions → Deploy Tests → Parallel Testing → Validation → Cleanup |
@@ -118,13 +118,11 @@ To learn more about pool strategies: `How Scratch Orgs Pools Fit Into Your Sales
 AgentforceCICD/
 ├── .github/
 │   └── workflows/
-│       ├── agentforce-classic/         # Classic demo workflows
-│       │   ├── agentforce-validate.yml
-│       │   └── agentforce-release.yml
-│       ├── agentforce-script/          # Script demo workflows
-│       │   ├── agentforce-script-validate.yml
-│       │   └── agentforce-script-release.yml
-│       └── prepare-pools.yml           # Shared pool preparation
+│       ├── agentforce-validate.yml         # Classic validate workflow
+│       ├── agentforce-release.yml          # Classic release workflow
+│       ├── agentforce-script-validate.yml  # Script validate workflow
+│       ├── agentforce-script-release.yml   # Script release workflow
+│       └── prepare-pools.yml               # Shared pool preparation
 ├── agentforce-classic/                 # Demo 1 — self-contained
 ├── agentforce-script/                  # Demo 2 — self-contained
 ├── config/                             # Shared pool & scratch org configs
