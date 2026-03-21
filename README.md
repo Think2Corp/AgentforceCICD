@@ -48,7 +48,7 @@ agentforce-classic/
 
 [![Slides](./agentforce-script/resources/SlidesCover.png)](./agentforce-script/resources/Slides.pdf)
 
-[Slides PDF](./agentforce-script/resources/Slides.pdf) | Video: coming after the event
+[Slides](https://speakerdeck.com/nabondance/agentforce-devops-state-of-the-art) | [Slides PDF](./agentforce-script/resources/Slides.pdf) | Video: coming after the event
 
 Agentforce Script is the new approach introduced in Spring '25. Instead of managing multiple bot metadata types, agents are defined as a single script file (`aiAuthoringBundle`) and published via CLI. The CI/CD pipeline adapts to this new model.
 
