@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>VwQ7pvmXhmAciDsx8q1LDAfMttr2K961dyRo0FHTIXY=_1</activeVersionIdentifier>
+    <description>Create haiku based on a specific theme</description>
+    <developerName>themed_haiku</developerName>
+    <masterLabel>themed_haiku</masterLabel>
+    <templateVersions>
+        <content>Create an haiku on the theme: {!$Input:Theme}
+
+Do not return anything else than the haiku itself
+</content>
+        <inputs>
+            <apiName>Theme</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Theme</masterLabel>
+            <referenceName>Input:Theme</referenceName>
+            <required>true</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Haiku</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>VwQ7pvmXhmAciDsx8q1LDAfMttr2K961dyRo0FHTIXY=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
